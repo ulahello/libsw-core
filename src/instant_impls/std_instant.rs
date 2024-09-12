@@ -8,7 +8,7 @@ use core::time::Duration;
 
 use crate::Instant;
 
-impl Instant for std::time::Instant {
+impl Instant for ::std::time::Instant {
     fn now() -> Self {
         Self::now()
     }
