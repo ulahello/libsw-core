@@ -4,14 +4,13 @@ version = "0.1.0"
 authors = ["Ula Shipman <ula.hello@mailbox.org>"]
 edition = "2021"
 rust-version = "1.61.0"
-# description = "Comprehensive stopwatch library"
-# documentation = "https://docs.rs/libsw"
-# homepage = "https://crates.io/crates/libsw"
-# repository = "https://github.com/ulahello/libsw"
+description = "Comprehensive stopwatch library"
+documentation = "https://docs.rs/libsw-core"
+homepage = "https://crates.io/crates/libsw-core"
+repository = "https://github.com/ulahello/libsw-core"
 license = "MIT OR Apache-2.0"
 keywords = ["stopwatch"]
 categories = ["date-and-time", "no-std", "no-std::no-alloc"]
-publish = false
 
 [badges.maintenance]
 status = "passively-maintained"
