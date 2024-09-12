@@ -1,0 +1,30 @@
+[package]
+name = "libsw-core"
+version = "0.1.0"
+authors = ["Ula Shipman <ula.hello@mailbox.org>"]
+edition = "2021"
+rust-version = "1.61.0"
+# description = "Comprehensive stopwatch library"
+# documentation = "https://docs.rs/libsw"
+# homepage = "https://crates.io/crates/libsw"
+# repository = "https://github.com/ulahello/libsw"
+license = "MIT OR Apache-2.0"
+keywords = ["stopwatch"]
+categories = ["date-and-time", "no-std", "no-std::no-alloc"]
+publish = false
+
+[badges.maintenance]
+status = "passively-maintained"
+
+[features]
+default = []
+std = []
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(doc_cfg)'] }
+
+[package.metadata.docs.rs]
+# build locally with:
+# RUSTDOCFLAGS="--cfg doc_cfg" cargo +nightly d --all-features --no-deps --open
+all-features = true
+rustdoc-args = ["--cfg", "doc_cfg"]
