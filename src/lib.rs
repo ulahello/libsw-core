@@ -26,11 +26,12 @@
 //!
 //! # Features
 //!
-//! | Name      | Implies | Description                                                                                                                               |
-//! |-----------|---------|-------------------------------------------------------------------------------------------------------------------------------------------|
-//! | `default` |         | Enabled by default.                                                                                                                       |
-//! | `std`     |         | Depends on the standard library. Implements [`Instant`] for `std::time::{Instant, SystemTime}`. Exposes `Sw` and `SystemSw` type aliases. |
-//! | `tokio`   | `std`   | Implements [`Instant`] for `tokio::time::Instant`. Exposes `TokioSw` type alias.                                                          |
+//! | Name         | Implies | Description                                                                                                                               |
+//! |--------------|---------|-------------------------------------------------------------------------------------------------------------------------------------------|
+//! | `default`    |         | Enabled by default.                                                                                                                       |
+//! | `std`        |         | Depends on the standard library. Implements [`Instant`] for `std::time::{Instant, SystemTime}`. Exposes `Sw` and `SystemSw` type aliases. |
+//! | `tokio`      | `std`   | Implements [`Instant`] for `tokio::time::Instant`. Exposes `TokioSw` type alias.                                                          |
+//! | `coarsetime` | `std`   | Implements [`Instant`] for `coarsetime::Instant`. Exposes `CoarseSw` type alias.                                                          |
 //!
 //! ## `no_std` support
 //!
@@ -75,6 +76,12 @@ pub type SystemSw = Stopwatch<::std::time::SystemTime>;
 #[cfg(feature = "tokio")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "tokio")))]
 pub type TokioSw = Stopwatch<::tokio::time::Instant>;
+
+/// Alias to [`Stopwatch`] using the `coarsetime` crate's
+/// [`Instant`](coarsetime::Instant) type.
+#[cfg(feature = "coarsetime")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "coarsetime")))]
+pub type CoarseSw = Stopwatch<::coarsetime::Instant>;
 
 #[cfg(test)]
 mod tests;

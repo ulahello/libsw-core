@@ -13,6 +13,7 @@ keywords = ["stopwatch"]
 categories = ["date-and-time", "no-std", "no-std::no-alloc"]
 
 [dependencies]
+coarsetime = { version = "~0.1", default-features = false, optional = true }
 tokio = { version = "~1", features = ["time"], default-features = false, optional = true }
 
 [badges.maintenance]
@@ -22,6 +23,7 @@ status = "passively-maintained"
 default = []
 std = []
 tokio = ["dep:tokio", "std"]
+coarsetime = ["dep:coarsetime", "std"]
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(doc_cfg)'] }
