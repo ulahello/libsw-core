@@ -1,6 +1,10 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- Clarified documentation for `Stopwatch::checked_sub_at` and
+  `Stopwatch::saturating_sub_at`
+  - The check for positive overflow occurs prior to subtraction.
 
 ## [0.2.0] - 2024-12-17
 ### Added

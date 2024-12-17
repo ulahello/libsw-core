@@ -657,9 +657,9 @@ impl<I: Instant> Stopwatch<I> {
     ///
     /// # Notes
     ///
-    /// - If the elapsed time is overflowing (as in, would exceed
-    ///   [`Duration::MAX`]), the elapsed time is clamped to [`Duration::MAX`] and
-    ///   `dur` is subtracted from that.
+    /// - If the elapsed time is overflowing (as in, exceeds [`Duration::MAX`]
+    ///   prior to subtraction), the elapsed time is clamped to
+    ///   [`Duration::MAX`] and *then* `dur` is subtracted from that.
     ///
     /// - `anchor` saturates to the last instant the stopwatch was started.
     ///
@@ -739,8 +739,7 @@ impl<I: Instant> Stopwatch<I> {
     ///
     /// # Notes
     ///
-    /// - Overflow can also occur if the elapsed time is overflowing (as in, would
-    ///   exceed [`Duration::MAX`]).
+    /// - Overflow occurs if the elapsed time overflows prior to subtraction.
     ///
     /// - `anchor` saturates to the last instant the stopwatch was started.
     ///
@@ -760,6 +759,7 @@ impl<I: Instant> Stopwatch<I> {
     /// // positive overflow yields `None`
     /// sw.set_in_place(Duration::MAX);
     /// assert_eq!(sw.checked_sub(Duration::ZERO), None);
+    /// assert_eq!(sw.checked_sub(Duration::from_secs(2)), None);
     /// ```
     #[must_use]
     pub fn checked_sub_at(mut self, dur: Duration, mut anchor: I) -> Option<Self> {
