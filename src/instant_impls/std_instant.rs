@@ -4,7 +4,7 @@
 
 extern crate std;
 
-use core::time::Duration;
+use ::core::time::Duration;
 
 use crate::Instant;
 
