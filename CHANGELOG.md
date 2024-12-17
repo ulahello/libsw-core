@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+
+## [0.3.0] - 2024-12-17
 ### Added
 - Added deprecated support for `time`
   - Added `time` feature flag
