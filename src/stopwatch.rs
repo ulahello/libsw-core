@@ -265,6 +265,7 @@ impl<I: Instant> Stopwatch<I> {
     }
 
     /// Starts measuring the time elapsed as if the current time were `anchor`.
+    /// If the stopwatch is already running, the prior start time is overwritten.
     ///
     /// # Notes
     ///
