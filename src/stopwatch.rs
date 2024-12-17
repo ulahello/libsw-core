@@ -269,8 +269,8 @@ impl<I: Instant> Stopwatch<I> {
     ///
     /// # Notes
     ///
-    /// If `anchor` is in the future, [`elapsed`](Self::elapsed) will return
-    /// [`Duration::ZERO`] until the current time catches up to it.
+    /// If `anchor` is ahead of the present, [`elapsed`](Self::elapsed) will
+    /// return [`Duration::ZERO`] until the current time catches up to it.
     ///
     /// # Examples
     ///
