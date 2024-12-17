@@ -32,6 +32,7 @@
 //! | `std`        |         | Depends on the standard library. Implements [`Instant`] for `std::time::{Instant, SystemTime}`. Exposes `Sw` and `SystemSw` type aliases. |
 //! | `tokio`      | `std`   | Implements [`Instant`] for `tokio::time::Instant`. Exposes `TokioSw` type alias.                                                          |
 //! | `coarsetime` | `std`   | Implements [`Instant`] for `coarsetime::Instant`. Exposes `CoarseSw` type alias.                                                          |
+//! | `quanta`     | `std`   | Implements [`Instant`] for `quanta::Instant`. Exposes `QuantaSw` type alias.                                                              |
 //!
 //! ## `no_std` support
 //!
@@ -82,6 +83,12 @@ pub type TokioSw = Stopwatch<::tokio::time::Instant>;
 #[cfg(feature = "coarsetime")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "coarsetime")))]
 pub type CoarseSw = Stopwatch<::coarsetime::Instant>;
+
+/// Alias to [`Stopwatch`] using the `quanta` crate's
+/// [`Instant`](quanta::Instant) type.
+#[cfg(feature = "quanta")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "quanta")))]
+pub type QuantaSw = Stopwatch<::quanta::Instant>;
 
 #[cfg(test)]
 mod tests;
