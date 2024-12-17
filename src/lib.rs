@@ -93,6 +93,7 @@ pub type QuantaSw = Stopwatch<::quanta::Instant>;
 
 /// Alias to [`Stopwatch`] using the `time` crate's [`Instant`](time::Instant)
 /// type.
+#[allow(deprecated)]
 #[cfg(feature = "time")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "time")))]
 #[deprecated(
