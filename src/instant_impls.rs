@@ -9,3 +9,7 @@ mod std_instant;
 #[cfg(feature = "std")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
 mod std_systemtime;
+
+#[cfg(feature = "tokio")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "tokio")))]
+mod tokio;

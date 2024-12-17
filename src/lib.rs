@@ -26,10 +26,11 @@
 //!
 //! # Features
 //!
-//! | Name      | Description                                                                                                                               |
-//! |-----------|-------------------------------------------------------------------------------------------------------------------------------------------|
-//! | `default` | Enabled by default.                                                                                                                       |
-//! | `std`     | Depends on the standard library. Implements [`Instant`] for `std::time::{Instant, SystemTime}`. Exposes `Sw` and `SystemSw` type aliases. |
+//! | Name      | Implies | Description                                                                                                                               |
+//! |-----------|---------|-------------------------------------------------------------------------------------------------------------------------------------------|
+//! | `default` |         | Enabled by default.                                                                                                                       |
+//! | `std`     |         | Depends on the standard library. Implements [`Instant`] for `std::time::{Instant, SystemTime}`. Exposes `Sw` and `SystemSw` type aliases. |
+//! | `tokio`   | `std`   | Implements [`Instant`] for `tokio::time::Instant`. Exposes `TokioSw` type alias.                                                          |
 //!
 //! ## `no_std` support
 //!
@@ -68,6 +69,12 @@ pub type Sw = Stopwatch<::std::time::Instant>;
 #[cfg(feature = "std")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
 pub type SystemSw = Stopwatch<::std::time::SystemTime>;
+
+/// Alias to [`Stopwatch`] using Tokio's [`Instant`](tokio::time::Instant)
+/// type.
+#[cfg(feature = "tokio")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "tokio")))]
+pub type TokioSw = Stopwatch<::tokio::time::Instant>;
 
 #[cfg(test)]
 mod tests;
