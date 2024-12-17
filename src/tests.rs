@@ -331,6 +331,32 @@ fn stop_before_last_start() {
 }
 
 #[test]
+fn repeat_start() {
+    let mut sw = Stopwatch::with_elapsed(DELAY);
+    let anchor1 = Instant::now();
+    let anchor2 = anchor1.checked_add(DELAY).unwrap();
+    sw.start_at(anchor1);
+    assert!(sw.is_running());
+    assert_eq!(sw.elapsed_at(anchor2), DELAY * 2);
+    sw.start_at(anchor2);
+    assert_eq!(sw.elapsed_at(anchor2), DELAY);
+    assert!(sw.is_running());
+}
+
+#[test]
+fn repeat_stop() {
+    let mut sw = Stopwatch::with_elapsed(DELAY);
+    let anchor1 = Instant::now();
+    let anchor2 = anchor1.checked_add(DELAY).unwrap();
+    sw.start_at(anchor1);
+    for _ in 0..2 {
+        sw.stop_at(anchor2);
+        assert!(sw.is_stopped());
+        assert_eq!(sw.elapsed(), DELAY * 2);
+    }
+}
+
+#[test]
 fn checked_stop_overflows() {
     let mut sw = Stopwatch::with_elapsed_started(Duration::MAX);
     thread::sleep(DELAY);

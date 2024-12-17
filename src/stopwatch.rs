@@ -348,7 +348,6 @@ impl<I: Instant> Stopwatch<I> {
     /// assert_eq!(sw_1, sw_2);
     /// ```
     pub fn stop_at(&mut self, anchor: I) {
-        // TODO: missing test coverage for stopping while stopped
         if let Some(start) = self.start.take() {
             let after_start = anchor.saturating_duration_since(start);
             *self = self.saturating_add(after_start);
