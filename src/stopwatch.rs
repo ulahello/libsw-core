@@ -773,11 +773,18 @@ impl<I: Instant> Stopwatch<I> {
 
 // private methods
 impl<I: Instant> Stopwatch<I> {
+    // Clamp `anchor` such that when `start` is present, `start <= anchor`.
     fn saturate_anchor_to_start(&self, anchor: &mut I) {
         if let Some(start) = self.start {
+            // Instant doesn't implement PartialOrd, so we measure their
+            // difference in both directions to order them.
+            // - iff `anchor` < `start`, then `past` is nonzero and `future` is zero
+            // - iff `start` < `anchor`, then `future` is nonzero and `past` is zero
+            // - iff `start` == `anchor`, then both `future` and `past` are zero
+
             let future = anchor.saturating_duration_since(start);
             let past = start.saturating_duration_since(*anchor);
-            // TODO: < vs <= not distinguished in tests
+
             if future < past {
                 *anchor = start;
             }
