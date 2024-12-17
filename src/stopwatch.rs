@@ -773,7 +773,7 @@ impl<I: Instant> Stopwatch<I> {
 
 // private methods
 impl<I: Instant> Stopwatch<I> {
-    // Clamp `anchor` such that when `start` is present, `start <= anchor`.
+    /// Clamp `anchor` such that when `start` is present, `start <= anchor`.
     fn saturate_anchor_to_start(&self, anchor: &mut I) {
         if let Some(start) = self.start {
             // Instant doesn't implement PartialOrd, so we measure their
