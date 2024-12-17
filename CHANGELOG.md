@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.3.1] - 2024-12-17
+### Fixed
+- Suppress deprecation warnings from `time` when building `libsw_core`
+- Fix outdated documentation about provided `Instant` implementations
+
 ## [0.3.0] - 2024-12-17
 ### Added
 - Added deprecated support for `time`
