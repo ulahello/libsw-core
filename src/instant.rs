@@ -16,10 +16,19 @@ use ::core::time::Duration;
 /// `libsw_core` provides `Instant` implementations for timekeeping types in the
 /// standard library.
 ///
-/// | Type                    | Feature flag |
-/// |-------------------------|--------------|
-/// | `std::time::Instant`    | `std`        |
-/// | `std::time::SystemTime` | `std`        |
+/// | Type                    | Feature flag | Notes       |
+/// |-------------------------|--------------|-------------|
+/// | `std::time::Instant`    | `std`        |             |
+/// | `std::time::SystemTime` | `std`        |             |
+/// | `tokio::time::Instant`  | `tokio`      |             |
+/// | `coarsetime::Instant`   | `coarsetime` |             |
+/// | `quanta::Instant`       | `quanta`     |             |
+/// | `time::Instant`         | `time`       | Deprecated. |
+///
+/// If a timekeeping type you want to use isn't supported out of the box, please
+/// consider [filing an issue](https://github.com/ulahello/libsw-core/issues)
+/// on GitHub. If you already implemented `Instant` for it, consider sending a
+/// PR upstream.
 pub trait Instant: Copy + Debug + Sized {
     /// Returns the current instant in time.
     fn now() -> Self;

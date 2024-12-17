@@ -20,9 +20,9 @@
 //! virtue of being generic. Any type `I` that implements the [`Instant`]
 //! trait (as in `Stopwatch<I>`) can be used for timekeeping.
 //!
-//! `Instant` is implemented for timekeeping types from the standard
-//! library out of the box. These implementations are exposed as type
-//! aliases.
+//! `Instant` is implemented for several timekeeping types out of the box (see
+//! [features](#features)). If present, these
+//! implementations are exposed as type aliases.
 //!
 //! # Features
 //!
