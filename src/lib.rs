@@ -73,8 +73,7 @@ pub type Sw = Stopwatch<::std::time::Instant>;
 #[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
 pub type SystemSw = Stopwatch<::std::time::SystemTime>;
 
-/// Alias to [`Stopwatch`] using Tokio's [`Instant`](tokio::time::Instant)
-/// type.
+/// Alias to [`Stopwatch`] using Tokio's [`Instant`](tokio::time::Instant) type.
 #[cfg(feature = "tokio")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "tokio")))]
 pub type TokioSw = Stopwatch<::tokio::time::Instant>;
