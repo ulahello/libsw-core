@@ -40,7 +40,8 @@
 //!
 //! ## Compiler support
 //!
-//! The minimum supported version of Rust is `1.61.0`.
+//! Standalone, the minimum supported version of Rust is `1.61.0`.
+//! Adding dependencies may bump this.
 //!
 //! ## Safety
 //!
