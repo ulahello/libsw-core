@@ -1,6 +1,25 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Added support for `tokio`
+  - Added `tokio` feature flag
+  - Added `TokioSw` type alias for `Stopwatch<tokio::time::Instant>`
+  - Implemented `libsw_core::Instant` for `tokio::time::Instant`
+- Added support for `coarsetime`
+  - Added `coarsetime` feature flag
+  - Added `CoarseSw` type alias for `Stopwatch<coarsetime::Instant>`
+  - Implemented `libsw_core::Instant` for `coarsetime::Instant`
+- Added support for `quanta`
+  - Added `quanta` feature flag
+  - Added `QuantaSw` type alias for `Stopwatch<quanta::Instant>`
+  - Implemented `libsw_core::Instant` for `quanta::Instant`
+
+### Changed
+- Added more test coverage
+- Updated documentation for `Stopwatch::start_at`
+  - `libsw` will not repeat starts or stops, but `libsw-core` will. The precise
+    semantics of this are now documented.
 
 ## [0.1.0] - 2024-09-12
 ### Added
