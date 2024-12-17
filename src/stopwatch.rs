@@ -347,6 +347,7 @@ impl<I: Instant> Stopwatch<I> {
     /// assert_eq!(sw_1, sw_2);
     /// ```
     pub fn stop_at(&mut self, anchor: I) {
+        // TODO: missing test coverage for stopping while stopped
         if let Some(start) = self.start.take() {
             let after_start = anchor.saturating_duration_since(start);
             *self = self.saturating_add(after_start);
@@ -776,6 +777,7 @@ impl<I: Instant> Stopwatch<I> {
         if let Some(start) = self.start {
             let future = anchor.saturating_duration_since(start);
             let past = start.saturating_duration_since(*anchor);
+            // TODO: < vs <= not distinguished in tests
             if future < past {
                 *anchor = start;
             }
@@ -799,6 +801,7 @@ impl<I: Instant> Stopwatch<I> {
     fn checked_sync_elapsed_at(&mut self, anchor: I) -> Option<()> {
         if let Some(start) = self.start {
             let after_start = anchor.saturating_duration_since(start);
+            // TODO: self.start not being modified when returning None is not covered by tests
             *self = self.checked_add(after_start)?;
             self.start = Some(anchor);
         }
