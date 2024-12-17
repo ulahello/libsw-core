@@ -21,3 +21,7 @@ mod coarsetime;
 #[cfg(feature = "quanta")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "quanta")))]
 mod quanta;
+
+#[cfg(feature = "time")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "time")))]
+mod time;

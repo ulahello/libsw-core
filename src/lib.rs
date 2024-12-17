@@ -33,6 +33,7 @@
 //! | `tokio`      | `std`   | Implements [`Instant`] for `tokio::time::Instant`. Exposes `TokioSw` type alias.                                                          |
 //! | `coarsetime` | `std`   | Implements [`Instant`] for `coarsetime::Instant`. Exposes `CoarseSw` type alias.                                                          |
 //! | `quanta`     | `std`   | Implements [`Instant`] for `quanta::Instant`. Exposes `QuantaSw` type alias.                                                              |
+//! | `time`       | `std`   | Deprecated. Implements [`Instant`] for `time::Instant`. Exposes `TimeSw` type alias.                                                      |
 //!
 //! ## `no_std` support
 //!
@@ -89,6 +90,15 @@ pub type CoarseSw = Stopwatch<::coarsetime::Instant>;
 #[cfg(feature = "quanta")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "quanta")))]
 pub type QuantaSw = Stopwatch<::quanta::Instant>;
+
+/// Alias to [`Stopwatch`] using the `time` crate's [`Instant`](time::Instant)
+/// type.
+#[cfg(feature = "time")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "time")))]
+#[deprecated(
+    note = "the `time` crate has deprecated `time::Instant` in favor of the `time::ext::InstantExt` trait used with `std::time::Instant`"
+)]
+pub type TimeSw = Stopwatch<::time::Instant>;
 
 #[cfg(test)]
 mod tests;

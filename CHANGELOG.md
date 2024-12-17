@@ -1,6 +1,12 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Added deprecated support for `time`
+  - Added `time` feature flag
+  - Added deprecated `TimeSw` type alias for `Stopwatch<time::Instant>`
+  - Implemented `libsw_core::Instant` for `time::Instant`
+
 ### Changed
 - Clarified documentation for `Stopwatch::checked_sub_at` and
   `Stopwatch::saturating_sub_at`

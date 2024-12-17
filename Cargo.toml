@@ -15,6 +15,7 @@ categories = ["date-and-time", "no-std", "no-std::no-alloc"]
 [dependencies]
 coarsetime = { version = "~0.1", default-features = false, optional = true }
 quanta = { version = "~0.12", default-features = false, optional = true }
+time = { version = "~0.3", features = ["std"], default-features = false, optional = true }
 tokio = { version = "~1", features = ["time"], default-features = false, optional = true }
 
 [badges.maintenance]
@@ -26,6 +27,7 @@ std = []
 tokio = ["dep:tokio", "std"]
 coarsetime = ["dep:coarsetime", "std"]
 quanta = ["dep:quanta", "std"]
+time = ["dep:time", "std"]
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(doc_cfg)'] }
