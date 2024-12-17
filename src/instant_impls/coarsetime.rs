@@ -12,7 +12,6 @@ use crate::Instant;
  * core::time::Duration. this may create friction in the api. */
 
 impl Instant for coarsetime::Instant {
-    #[inline]
     fn now() -> Self {
         Self::now()
     }
@@ -27,7 +26,6 @@ impl Instant for coarsetime::Instant {
         coarsetime::Instant::checked_sub(*self, coarse_dur)
     }
 
-    #[inline]
     fn saturating_duration_since(&self, earlier: Self) -> Duration {
         self.duration_since(earlier).into()
     }
