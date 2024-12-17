@@ -808,7 +808,6 @@ impl<I: Instant> Stopwatch<I> {
     fn checked_sync_elapsed_at(&mut self, anchor: I) -> Option<()> {
         if let Some(start) = self.start {
             let after_start = anchor.saturating_duration_since(start);
-            // TODO: self.start not being modified when returning None is not covered by tests
             *self = self.checked_add(after_start)?;
             self.start = Some(anchor);
         }
