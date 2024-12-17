@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+
+## [0.2.0] - 2024-12-17
 ### Added
 - Added support for `tokio`
   - Added `tokio` feature flag
