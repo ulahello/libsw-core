@@ -904,7 +904,6 @@ impl<I: Instant> PartialEq for Stopwatch<I> {
     /// Stopwatches are equal if whether they are running and their elapsed time
     /// are equal.
     fn eq(&self, rhs: &Self) -> bool {
-        // TODO: no test coverage for correctness
         match (self.start, rhs.start) {
             (Some(_), None) | (None, Some(_)) => {
                 // they have different states, definitely not equal
@@ -924,6 +923,7 @@ impl<I: Instant> PartialEq for Stopwatch<I> {
                 debug_assert!(self.is_running() && rhs.is_running());
                 let self_ok = Self::normalize_start_inner(&mut self_start, self.elapsed);
                 let rhs_ok = Self::normalize_start_inner(&mut rhs_start, rhs.elapsed);
+                // TODO: incomplete test coverage for correctness
                 if self_ok & rhs_ok {
                     self_start.saturating_duration_since(rhs_start)
                         == rhs_start.saturating_duration_since(self_start)
