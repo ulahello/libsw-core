@@ -434,7 +434,7 @@ fn partial_eq_saturation_disqualifies_elapsed_as_viable_method() {
     let sw_2 = Stopwatch::new_started_at(anchor2);
 
     // yes,
-    assert_eq!(sw_1.elapsed_at(anchor0), sw_2.elapsed_at(anchor1));
+    assert_eq!(sw_1.elapsed_at(anchor0), sw_2.elapsed_at(anchor0));
     assert_eq!(sw_1.is_running(), sw_2.is_running());
 
     // but...
