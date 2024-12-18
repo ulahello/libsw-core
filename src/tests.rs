@@ -424,6 +424,7 @@ fn eq_correct() {
 
 #[test]
 fn partial_eq() {
+    // TODO: this is testing... nothing? PartialEq::ne has a default impl which is ostensibly correct
     for [a, b, _] in mixed_stopwatches() {
         assert_eq!(a == b, !(a != b));
     }

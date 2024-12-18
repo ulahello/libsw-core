@@ -904,6 +904,7 @@ impl<I: Instant> PartialEq for Stopwatch<I> {
     /// Stopwatches are equal if whether they are running and their elapsed time
     /// are equal.
     fn eq(&self, rhs: &Self) -> bool {
+        // TODO: no test coverage for correctness
         match (self.start, rhs.start) {
             (Some(_), None) | (None, Some(_)) => {
                 // they have different states, definitely not equal
