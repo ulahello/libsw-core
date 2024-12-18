@@ -423,6 +423,25 @@ fn eq_correct() {
 }
 
 #[test]
+fn partial_eq_mixed_state() {
+    let anchor1 = Instant::now();
+    let anchor2 = anchor1.checked_add(DELAY).unwrap();
+    let sw_0 = Stopwatch::new();
+    let sw_1 = Stopwatch::new_started_at(anchor1);
+    let sw_2 = Stopwatch::new_started_at(anchor2);
+
+    // yes,
+    assert_eq!(sw_0.elapsed_at(anchor1), sw_1.elapsed_at(anchor1));
+    assert_eq!(sw_0.elapsed_at(anchor1), sw_2.elapsed_at(anchor1));
+    assert_eq!(sw_1.elapsed_at(anchor1), sw_2.elapsed_at(anchor1));
+
+    // but...
+    assert_ne!(sw_0, sw_1);
+    assert_ne!(sw_0, sw_2);
+    assert_ne!(sw_1, sw_2);
+}
+
+#[test]
 fn partial_eq() {
     // TODO: this is testing... nothing? PartialEq::ne has a default impl which is ostensibly correct
     for [a, b, _] in mixed_stopwatches() {
