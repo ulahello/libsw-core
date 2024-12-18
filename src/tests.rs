@@ -423,6 +423,25 @@ fn eq_correct() {
 }
 
 #[test]
+fn partial_eq_saturation_disqualifies_elapsed_as_viable_method() {
+    let anchor0 = Instant::now();
+    let anchor1 = anchor0.checked_add(DELAY).unwrap();
+    let anchor2 = anchor1.checked_add(DELAY).unwrap();
+    //     NOW
+    // <----|--------->
+    //      0   1   2
+    let sw_1 = Stopwatch::new_started_at(anchor1);
+    let sw_2 = Stopwatch::new_started_at(anchor2);
+
+    // yes,
+    assert_eq!(sw_1.elapsed_at(anchor0), sw_2.elapsed_at(anchor1));
+    assert_eq!(sw_1.is_running(), sw_2.is_running());
+
+    // but...
+    assert_ne!(sw_1, sw_2);
+}
+
+#[test]
 fn partial_eq_mixed_state() {
     let anchor1 = Instant::now();
     let anchor2 = anchor1.checked_add(DELAY).unwrap();
