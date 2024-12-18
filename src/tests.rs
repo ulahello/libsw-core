@@ -423,6 +423,32 @@ fn eq_correct() {
 }
 
 #[test]
+fn partial_eq_use_of_unnormalized_instant() {
+    /// Returns an instant that is pretty close to the epoch, and a duration reaching past it.
+    fn approximately_the_epoch(search_start: Instant) -> (Instant, Duration) {
+        let mut dt = Duration::MAX;
+        let mut t = search_start;
+        while t.checked_sub(dt).is_some() || t.checked_add(dt).is_none() {
+            while let Some(new_t) = t.checked_sub(dt) {
+                t = new_t;
+            }
+            dt /= 2;
+        }
+        (t, dt)
+    }
+
+    let (anchor1, dt) = approximately_the_epoch(Instant::now());
+    let anchor2 = anchor1.checked_add(dt).unwrap();
+    assert_eq!(None, anchor1.checked_sub(dt));
+    assert_eq!(anchor1, anchor2.checked_sub(dt).unwrap());
+
+    assert_ne!(
+        Stopwatch::from_raw(dt, Some(anchor1)),
+        Stopwatch::from_raw(dt, Some(anchor2)),
+    );
+}
+
+#[test]
 fn partial_eq_saturation_disqualifies_elapsed_as_viable_method() {
     let anchor0 = Instant::now();
     let anchor1 = anchor0.checked_add(DELAY).unwrap();
@@ -478,6 +504,8 @@ fn hash_and_eq() {
         sw_1.hash(&mut hasher_1);
         sw_2.hash(&mut hasher_2);
         sw_3.hash(&mut hasher_3);
+
+        dbg!(sw_1, sw_2, sw_3);
 
         // > When implementing both Hash and Eq, it is important that the following property holds:
         // > k1 == k2 -> hash(k1) == hash(k2)
