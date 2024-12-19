@@ -241,25 +241,19 @@ fn sane_elapsed_while_running() {
 }
 
 #[test]
-#[should_panic]
 fn sync_before_sub_saturating() {
     let mut sw = Stopwatch::new_started();
     thread::sleep(DELAY);
-    sw -= DELAY;
-    assert!(sw.elapsed() >= DELAY);
+    sw = sw.saturating_sub(DELAY);
+    assert!(sw.elapsed() < DELAY);
 }
 
 #[test]
-#[should_panic]
 fn sync_before_sub_checked() {
     let mut sw = Stopwatch::new_started();
     thread::sleep(DELAY);
-    sw = match sw.checked_sub(DELAY) {
-        Some(new) => new,
-        // test is expected to panic so return abnormally to indicate failure
-        None => return,
-    };
-    assert!(sw.elapsed() >= DELAY);
+    sw = sw.checked_sub(DELAY).unwrap();
+    assert!(sw.elapsed() < DELAY);
 }
 
 #[test]
