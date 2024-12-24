@@ -21,8 +21,8 @@ use crate::Instant;
 /// # use libsw_core::Sw;
 /// # use core::time::Duration;
 /// # use std::time::Instant;
-/// let mut elapsed = Duration::from_secs(10);
-/// let mut start = Instant::now();
+/// let elapsed = Duration::from_secs(10);
+/// let start = Instant::now();
 /// let sw_1 = Sw {
 ///     elapsed,
 ///     start: Some(start),
@@ -672,7 +672,7 @@ impl<I: Instant> Stopwatch<I> {
     /// # use std::thread;
     /// let mut sw = Sw::new_started();
     /// thread::sleep(Duration::from_millis(100));
-    /// let mut now = Instant::now();
+    /// let now = Instant::now();
     /// sw = sw.saturating_sub_at(Duration::from_secs(1), now);
     /// assert_eq!(sw.elapsed_at(now), Duration::ZERO);
     /// ```
