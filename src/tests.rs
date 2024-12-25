@@ -480,6 +480,22 @@ fn partial_eq_mixed_state() {
     assert_ne!(sw_1, sw_2);
 }
 
+/* TODOO: find a canonicalized form for stopwatches where
+ * `start.checked_sub(elapsed).is_none()`, so we can test equality as
+ * expected */
+#[ignore]
+#[test]
+fn unbounded_eq() {
+    let anchor = Instant::now();
+    let sw_1 = Stopwatch::from_raw(Duration::MAX, Some(anchor));
+    let sw_2 = Stopwatch::from_raw(Duration::MAX - DELAY, Some(anchor - DELAY));
+    let sw_3 = Stopwatch::from_raw(Duration::MAX - DELAY, Some(anchor));
+
+    assert_eq!(sw_1, sw_2);
+    assert_ne!(sw_1, sw_3);
+    assert_ne!(sw_2, sw_3);
+}
+
 #[test]
 fn partial_eq() {
     // TODO: this is testing... nothing? PartialEq::ne has a default impl which is ostensibly correct
