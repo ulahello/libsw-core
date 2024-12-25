@@ -2,6 +2,8 @@
 // copyright (C) 2022-2023 Ula Shipman <ula.hello@mailbox.org>
 // licensed under MIT OR Apache-2.0
 
+// TODO: inconsistent occurs vs occurred
+
 use ::core::hash::{Hash, Hasher};
 use ::core::ops;
 use ::core::time::Duration;
