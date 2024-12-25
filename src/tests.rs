@@ -11,10 +11,12 @@ use ::core::time::Duration;
 use ::std::collections::hash_map::DefaultHasher;
 use ::std::thread;
 
+use crate::Instant;
+
 /* TODO: manually changing these aliases if i want to test all supported
  * `Instant` impls is annoying */
-type Instant = std::time::Instant;
-type Stopwatch = crate::stopwatch::Stopwatch<Instant>;
+type I = std::time::Instant;
+type Stopwatch = crate::stopwatch::Stopwatch<I>;
 
 const DELAY: Duration = Duration::from_millis(100);
 
@@ -25,7 +27,7 @@ fn default() {
 
 #[test]
 fn new() {
-    let now = Instant::now();
+    let now = I::now();
     assert_eq!(Stopwatch::new().elapsed(), Duration::ZERO);
     assert_eq!(Stopwatch::new_started().elapsed, Duration::ZERO);
     assert_eq!(
@@ -150,7 +152,7 @@ fn sub() {
 fn sub_at() {
     let mut sw = Stopwatch::with_elapsed_started(DELAY * 3);
     thread::sleep(DELAY);
-    let now = Instant::now();
+    let now = I::now();
     let old_elapsed = sw.elapsed_at(now);
     sw = sw.saturating_sub_at(DELAY * 3, now);
     thread::sleep(DELAY);
@@ -191,7 +193,7 @@ fn checked_sub() {
         Stopwatch::with_elapsed(DELAY * 2)
     );
 
-    let start = Some(Instant::now());
+    let start = Some(I::now());
     assert_eq!(
         Stopwatch::from_raw(DELAY * 3, start)
             .checked_sub(DELAY)
@@ -267,9 +269,9 @@ fn sync_before_sub_checked_overflow() {
 fn sub_at_earlier_anchor_behavior() {
     let mut sw = Stopwatch::new();
 
-    let earlier = Instant::now();
+    let earlier = I::now();
     thread::sleep(DELAY);
-    let later = Instant::now();
+    let later = I::now();
     thread::sleep(DELAY);
 
     sw.start_at(later);
@@ -291,7 +293,11 @@ fn sub_at_earlier_anchor_behavior() {
 #[test]
 fn elapsed_at_saturates() {
     let sw = Stopwatch::with_elapsed_started(DELAY);
-    assert_eq!(sw.elapsed_at(Instant::now() - (DELAY * 2)), DELAY);
+    let now = I::now();
+    assert_eq!(
+        sw.elapsed_at(Instant::checked_sub(&now, DELAY * 2).unwrap()),
+        DELAY
+    );
 }
 
 #[test]
@@ -304,7 +310,8 @@ fn checked_elapsed_overflows() {
 #[test]
 fn start_in_future() {
     let mut sw = Stopwatch::new();
-    sw.start_at(Instant::now() + (DELAY * 2));
+    let now = I::now();
+    sw.start_at(Instant::checked_add(&now, DELAY * 2).unwrap());
 
     thread::sleep(DELAY);
     sw.stop();
@@ -314,12 +321,12 @@ fn start_in_future() {
 #[test]
 fn stop_before_last_start() {
     let mut sw = Stopwatch::with_elapsed(DELAY);
-    let start = Instant::now();
+    let start = I::now();
     let old_elapsed = sw.elapsed();
 
     sw.start_at(start);
     thread::sleep(DELAY);
-    sw.stop_at(start - DELAY);
+    sw.stop_at(Instant::checked_sub(&start, DELAY).unwrap());
 
     assert_eq!(old_elapsed, sw.elapsed());
 }
@@ -327,8 +334,8 @@ fn stop_before_last_start() {
 #[test]
 fn repeat_start() {
     let mut sw = Stopwatch::with_elapsed(DELAY);
-    let anchor1 = Instant::now();
-    let anchor2 = anchor1.checked_add(DELAY).unwrap();
+    let anchor1 = I::now();
+    let anchor2 = Instant::checked_add(&anchor1, DELAY).unwrap();
     sw.start_at(anchor1);
     assert!(sw.is_running());
     assert_eq!(sw.elapsed_at(anchor2), DELAY * 2);
@@ -340,8 +347,8 @@ fn repeat_start() {
 #[test]
 fn repeat_stop() {
     let mut sw = Stopwatch::with_elapsed(DELAY);
-    let anchor1 = Instant::now();
-    let anchor2 = anchor1.checked_add(DELAY).unwrap();
+    let anchor1 = I::now();
+    let anchor2 = Instant::checked_add(&anchor1, DELAY).unwrap();
     sw.start_at(anchor1);
     for _ in 0..2 {
         sw.stop_at(anchor2);
@@ -392,7 +399,7 @@ fn eq_properties() {
 #[test]
 fn eq_running() {
     // whatever is compared shouldn't depend on the time of observation
-    let now = Instant::now();
+    let now = I::now();
     let sw_1 = Stopwatch::new_started_at(now);
     let sw_2 = Stopwatch::new_started_at(now);
     let sw_3 = Stopwatch::from_raw(DELAY, Some(now));
@@ -410,7 +417,7 @@ fn eq_correct() {
 
     let mut sw_1 = Stopwatch::new();
     let mut sw_2 = Stopwatch::new();
-    let start = Instant::now();
+    let start = I::now();
     sw_1.start_at(start);
     sw_2.start_at(start);
     assert_eq!(sw_1, sw_2);
@@ -419,11 +426,11 @@ fn eq_correct() {
 #[test]
 fn partial_eq_use_of_unnormalized_instant() {
     /// Returns an instant that is pretty close to the epoch, and a duration reaching past it.
-    fn approximately_the_epoch(search_start: Instant) -> (Instant, Duration) {
+    fn approximately_the_epoch(search_start: I) -> (I, Duration) {
         let mut dt = Duration::MAX;
         let mut t = search_start;
-        while t.checked_sub(dt).is_some() || t.checked_add(dt).is_none() {
-            while let Some(new_t) = t.checked_sub(dt) {
+        while Instant::checked_sub(&t, dt).is_some() || Instant::checked_add(&t, dt).is_none() {
+            while let Some(new_t) = Instant::checked_sub(&t, dt) {
                 t = new_t;
             }
             dt /= 2;
@@ -431,10 +438,10 @@ fn partial_eq_use_of_unnormalized_instant() {
         (t, dt)
     }
 
-    let (anchor1, dt) = approximately_the_epoch(Instant::now());
-    let anchor2 = anchor1.checked_add(dt).unwrap();
-    assert_eq!(None, anchor1.checked_sub(dt));
-    assert_eq!(anchor1, anchor2.checked_sub(dt).unwrap());
+    let (anchor1, dt) = approximately_the_epoch(I::now());
+    let anchor2 = Instant::checked_add(&anchor1, dt).unwrap();
+    assert_eq!(None, Instant::checked_sub(&anchor1, dt));
+    assert_eq!(anchor1, Instant::checked_sub(&anchor2, dt).unwrap());
 
     assert_ne!(
         Stopwatch::from_raw(dt, Some(anchor1)),
@@ -444,9 +451,9 @@ fn partial_eq_use_of_unnormalized_instant() {
 
 #[test]
 fn partial_eq_saturation_disqualifies_elapsed_as_viable_method() {
-    let anchor0 = Instant::now();
-    let anchor1 = anchor0.checked_add(DELAY).unwrap();
-    let anchor2 = anchor1.checked_add(DELAY).unwrap();
+    let anchor0 = I::now();
+    let anchor1 = Instant::checked_add(&anchor0, DELAY).unwrap();
+    let anchor2 = Instant::checked_add(&anchor1, DELAY).unwrap();
     //     NOW
     // <----|--------->
     //      0   1   2
@@ -463,8 +470,8 @@ fn partial_eq_saturation_disqualifies_elapsed_as_viable_method() {
 
 #[test]
 fn partial_eq_mixed_state() {
-    let anchor1 = Instant::now();
-    let anchor2 = anchor1.checked_add(DELAY).unwrap();
+    let anchor1 = I::now();
+    let anchor2 = Instant::checked_add(&anchor1, DELAY).unwrap();
     let sw_0 = Stopwatch::new();
     let sw_1 = Stopwatch::new_started_at(anchor1);
     let sw_2 = Stopwatch::new_started_at(anchor2);
@@ -486,9 +493,12 @@ fn partial_eq_mixed_state() {
 #[ignore]
 #[test]
 fn unbounded_eq_future() {
-    let anchor = Instant::now();
+    let anchor = I::now();
     let sw_1 = Stopwatch::from_raw(Duration::MAX, Some(anchor));
-    let sw_2 = Stopwatch::from_raw(Duration::MAX - DELAY, Some(anchor - DELAY));
+    let sw_2 = Stopwatch::from_raw(
+        Duration::MAX - DELAY,
+        Some(Instant::checked_sub(&anchor, DELAY).unwrap()),
+    );
     let sw_3 = Stopwatch::from_raw(Duration::MAX - DELAY, Some(anchor));
 
     assert_eq!(sw_1, sw_2);
@@ -501,8 +511,8 @@ fn unbounded_eq_status_quo() {
     let overflowing_1;
     let overflowing_2;
     {
-        let start_1 = Instant::now();
-        let start_2 = <Instant as crate::Instant>::checked_sub(&start_1, DELAY).unwrap();
+        let start_1 = I::now();
+        let start_2 = Instant::checked_sub(&start_1, DELAY).unwrap();
         overflowing_1 = Stopwatch::from_raw(Duration::MAX, Some(start_1));
         overflowing_2 = Stopwatch::from_raw(Duration::MAX, Some(start_2));
     }
@@ -541,7 +551,7 @@ fn hash_and_eq() {
 
 #[test]
 fn hash_running() {
-    let now = Instant::now();
+    let now = I::now();
     let sw_1 = Stopwatch::new_started_at(now);
     let sw_2 = Stopwatch::new_started_at(now);
     let sw_3 = Stopwatch::from_raw(DELAY, Some(now));
@@ -564,11 +574,11 @@ fn mixed_stopwatches() -> [[Stopwatch; 3]; 11] {
     let crafted_2;
     {
         let mut elapsed = Duration::from_secs(10);
-        let mut start = Instant::now();
+        let mut start = I::now();
         crafted_1 = Stopwatch::from_raw(elapsed, Some(start));
 
         elapsed -= Duration::from_secs(1);
-        start = <Instant as crate::Instant>::checked_sub(&start, Duration::from_secs(1)).unwrap();
+        start = Instant::checked_sub(&start, Duration::from_secs(1)).unwrap();
         crafted_2 = Stopwatch::from_raw(elapsed, Some(start));
     }
     assert_eq!(crafted_1, crafted_2);
@@ -580,8 +590,8 @@ fn mixed_stopwatches() -> [[Stopwatch; 3]; 11] {
     let overflowing_1;
     let overflowing_2;
     {
-        let start_1 = Instant::now();
-        let start_2 = <Instant as crate::Instant>::checked_sub(&start_1, DELAY).unwrap();
+        let start_1 = I::now();
+        let start_2 = Instant::checked_sub(&start_1, DELAY).unwrap();
         overflowing_1 = Stopwatch::from_raw(Duration::MAX, Some(start_1));
         overflowing_2 = Stopwatch::from_raw(Duration::MAX, Some(start_2));
     }
