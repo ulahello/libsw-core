@@ -6,6 +6,7 @@ use ::core::hash::{Hash, Hasher};
 use ::core::ops;
 use ::core::time::Duration;
 
+use crate::canonical::Canonical;
 use crate::Instant;
 
 /// A stopwatch measures and accumulates elapsed time between starts and stops.
@@ -813,28 +814,6 @@ impl<I: Instant> Stopwatch<I> {
         }
         Some(())
     }
-
-    /// "Transfers" `elapsed` to `start`, such that [`Self::elapsed`] is
-    /// unchanged, and the new `elapsed` is zero. Returns `false` if the new
-    /// start time cannot be represented.
-    fn normalize_start(&mut self) -> bool {
-        if let Some(ref mut start) = self.start {
-            if !Self::normalize_start_inner(start, self.elapsed) {
-                return false;
-            }
-            self.elapsed = Duration::ZERO;
-        }
-        true
-    }
-
-    fn normalize_start_inner(start: &mut I, elapsed: Duration) -> bool {
-        if let Some(new) = start.checked_sub(elapsed) {
-            *start = new;
-            true
-        } else {
-            false
-        }
-    }
 }
 
 impl<I: Instant> Default for Stopwatch<I> {
@@ -904,36 +883,7 @@ impl<I: Instant> PartialEq for Stopwatch<I> {
     /// Stopwatches are equal if whether they are running and their elapsed time
     /// are equal.
     fn eq(&self, rhs: &Self) -> bool {
-        match (self.start, rhs.start) {
-            (Some(_), None) | (None, Some(_)) => {
-                // they have different states, definitely not equal
-                debug_assert_ne!(self.is_running(), rhs.is_running());
-                false
-            }
-
-            (None, None) => {
-                /* they're both stopped, we can simply compare `elapsed` without
-                 * worrying about time */
-                debug_assert!(self.is_stopped() && rhs.is_stopped());
-                self.elapsed == rhs.elapsed
-            }
-
-            (Some(mut self_start), Some(mut rhs_start)) => {
-                // they're both running, we need to worry about time
-                debug_assert!(self.is_running() && rhs.is_running());
-                let self_ok = Self::normalize_start_inner(&mut self_start, self.elapsed);
-                let rhs_ok = Self::normalize_start_inner(&mut rhs_start, rhs.elapsed);
-                // TODO: incomplete test coverage for correctness
-                if self_ok & rhs_ok {
-                    self_start.saturating_duration_since(rhs_start)
-                        == rhs_start.saturating_duration_since(self_start)
-                } else {
-                    /* start times can't be trusted since normalizing failed! we
-                     * cannot compare them. */
-                    self_ok == rhs_ok
-                }
-            }
-        }
+        Canonical::new(*self) == Canonical::new(*rhs)
     }
 }
 
@@ -948,14 +898,6 @@ impl<I: Instant + Hash> Hash for Stopwatch<I> {
     /// `I` (the [`Instant`] type used by the stopwatch) must implement
     /// [`Hash`].
     fn hash<H: Hasher>(&self, state: &mut H) {
-        let mut self_ = *self;
-        let ok = self_.normalize_start();
-
-        ok.hash(state);
-        if ok {
-            // we can only trust `elapsed` and `start` if normalizing succeeded.
-            self_.elapsed.hash(state);
-            self_.start.hash(state);
-        }
+        Canonical::new(*self).hash(state);
     }
 }

@@ -55,6 +55,7 @@
 
 extern crate core;
 
+mod canonical;
 mod instant;
 mod instant_impls;
 mod stopwatch;

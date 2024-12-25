@@ -485,7 +485,7 @@ fn partial_eq_mixed_state() {
  * expected */
 #[ignore]
 #[test]
-fn unbounded_eq() {
+fn unbounded_eq_future() {
     let anchor = Instant::now();
     let sw_1 = Stopwatch::from_raw(Duration::MAX, Some(anchor));
     let sw_2 = Stopwatch::from_raw(Duration::MAX - DELAY, Some(anchor - DELAY));
@@ -494,6 +494,20 @@ fn unbounded_eq() {
     assert_eq!(sw_1, sw_2);
     assert_ne!(sw_1, sw_3);
     assert_ne!(sw_2, sw_3);
+}
+
+#[test]
+fn unbounded_eq_status_quo() {
+    let overflowing_1;
+    let overflowing_2;
+    {
+        let start_1 = Instant::now();
+        let start_2 = <Instant as crate::Instant>::checked_sub(&start_1, DELAY).unwrap();
+        overflowing_1 = Stopwatch::from_raw(Duration::MAX, Some(start_1));
+        overflowing_2 = Stopwatch::from_raw(Duration::MAX, Some(start_2));
+    }
+
+    assert_eq!(overflowing_1, overflowing_2);
 }
 
 #[test]
