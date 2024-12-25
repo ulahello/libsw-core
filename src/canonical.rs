@@ -8,7 +8,7 @@ fn instant_eq<I: Instant>(lhs: I, rhs: I) -> bool {
     lhs.saturating_duration_since(rhs) == rhs.saturating_duration_since(lhs)
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub(crate) enum Canonical<I: Instant> {
     Stopped(Duration),
     Bounded(I),
