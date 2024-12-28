@@ -404,13 +404,22 @@ fn eq_properties() {
         // reflexive
         assert!(a == a);
         assert!(b == b);
+        assert!(c == c);
 
         // symmetric
         assert_eq!(a == b, b == a);
+        assert_eq!(a == c, c == a);
+        assert_eq!(b == c, c == b);
 
         // transitive
         if (a == b) && (b == c) {
             assert_eq!(a, c);
+        }
+        if (b == a) && (a == c) {
+            assert_eq!(b, c);
+        }
+        if (a == c) && (c == b) {
+            assert_eq!(a, b);
         }
     }
 }
