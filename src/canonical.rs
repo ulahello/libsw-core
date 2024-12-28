@@ -30,7 +30,9 @@ impl<I: Instant> Canonical<I> {
 
                 None => {
                     // # Case 2: t - d ∉ T
-                    // TODO: idk yet. for now, they're all one equivalence class.
+                    // we consider all unbounded stopwatches to be equivalent.
+                    // it's tricky to do otherwise because of how opaque and
+                    // generic Instants are.
                     Self::Unbounded(())
                 }
             },
