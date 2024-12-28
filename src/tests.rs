@@ -5,10 +5,6 @@
 /* TODOO: not designed for approximate time but coarsetime is
  * supported. it fails some of these tests; grep for @depends-exact */
 
-/* TODO: re-organize tests */
-/* TODO: Instant::checked_add is not covered at all by tests and is not used in
- * crate */
-
 use ::core::hash::{Hash, Hasher};
 use ::core::time::Duration;
 use ::std::collections::hash_map::DefaultHasher;
@@ -494,9 +490,11 @@ fn partial_eq_mixed_state() {
     assert_ne!(sw_1, sw_2);
 }
 
-/* TODOO: find a canonicalized form for stopwatches where
- * `start.checked_sub(elapsed).is_none()`, so we can test equality as
- * expected */
+/* NOTE: currently, the canonicalized form for stopwatches s.t.
+ * `start.checked_sub(elapsed).is_none()` carries no information, so they are
+ * all equal. this test is written for a future with multiple equivalence
+ * classes of said stopwatches, where they can be compared as if `checked_sub`
+ * didn't overflow. */
 #[ignore]
 #[test]
 fn unbounded_eq_future() {
