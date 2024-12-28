@@ -224,6 +224,22 @@ fn checked_sub_overflow() {
     assert_eq!(Stopwatch::with_elapsed(DELAY).checked_sub(DELAY * 2), None);
 }
 
+#[test]
+fn saturating_sub_overflow() {
+    let mut sw = Stopwatch::with_elapsed(Duration::MAX);
+    assert_eq!(sw.checked_elapsed(), Some(Duration::MAX));
+
+    let anchor0 = I::now();
+    let anchor1 = Instant::checked_add(&anchor0, DELAY * 2).unwrap();
+    sw.start_at(anchor0);
+
+    assert_eq!(sw.checked_elapsed_at(anchor0), Some(Duration::MAX));
+    assert_eq!(sw.checked_elapsed_at(anchor1), None);
+
+    sw = sw.saturating_sub_at(DELAY, anchor1);
+    assert_eq!(sw.checked_elapsed_at(anchor0), Some(Duration::MAX - DELAY)); // when elapsed overflows, subtraction occurs "after clamping"
+}
+
 // @depends-exact
 #[test]
 fn sane_elapsed_while_stopped() {
