@@ -542,14 +542,6 @@ fn unbounded_eq_status_quo() {
 }
 
 #[test]
-fn partial_eq() {
-    // TODO: this is testing... nothing? PartialEq::ne has a default impl which is ostensibly correct
-    for [a, b, _] in mixed_stopwatches() {
-        assert_eq!(a == b, !(a != b));
-    }
-}
-
-#[test]
 fn hash_and_eq() {
     for [sw_1, sw_2, sw_3] in mixed_stopwatches() {
         let mut hasher_1 = DefaultHasher::new();
