@@ -2,6 +2,9 @@
 // copyright (C) 2022-2023 Ula Shipman <ula.hello@mailbox.org>
 // licensed under MIT OR Apache-2.0
 
+/* TODOO: not designed for approximate time but coarsetime is
+ * supported. it fails some of these tests; grep for @depends-exact */
+
 /* TODO: re-organize tests */
 /* TODO: Instant::checked_add is not covered at all by tests and is not used in
  * crate */
@@ -225,6 +228,7 @@ fn checked_sub_overflow() {
     assert_eq!(Stopwatch::with_elapsed(DELAY).checked_sub(DELAY * 2), None);
 }
 
+// @depends-exact
 #[test]
 fn sane_elapsed_while_stopped() {
     let mut sw = Stopwatch::new_started();
@@ -234,6 +238,7 @@ fn sane_elapsed_while_stopped() {
     assert!(sw.elapsed() >= DELAY);
 }
 
+// @depends-exact
 #[test]
 fn sane_elapsed_while_running() {
     let sw = Stopwatch::new_started();
@@ -254,7 +259,7 @@ fn sync_before_sub_saturating() {
 fn sync_before_sub_checked() {
     let mut sw = Stopwatch::new_started();
     thread::sleep(DELAY);
-    sw = sw.checked_sub(DELAY).unwrap();
+    sw = sw.checked_sub(DELAY).unwrap(); // @depends-exact
     assert!(sw.elapsed() < DELAY);
 }
 
@@ -331,6 +336,7 @@ fn stop_before_last_start() {
     assert_eq!(old_elapsed, sw.elapsed());
 }
 
+// @depends-exact
 #[test]
 fn repeat_start() {
     let mut sw = Stopwatch::with_elapsed(DELAY);
@@ -344,6 +350,7 @@ fn repeat_start() {
     assert!(sw.is_running());
 }
 
+// @depends-exact
 #[test]
 fn repeat_stop() {
     let mut sw = Stopwatch::with_elapsed(DELAY);
@@ -441,7 +448,7 @@ fn partial_eq_use_of_unnormalized_instant() {
     let (anchor1, dt) = approximately_the_epoch(I::now());
     let anchor2 = Instant::checked_add(&anchor1, dt).unwrap();
     assert_eq!(None, Instant::checked_sub(&anchor1, dt));
-    assert_eq!(anchor1, Instant::checked_sub(&anchor2, dt).unwrap());
+    assert_eq!(anchor1, Instant::checked_sub(&anchor2, dt).unwrap()); // @depends-exact
 
     assert_ne!(
         Stopwatch::from_raw(dt, Some(anchor1)),
