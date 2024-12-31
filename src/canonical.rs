@@ -64,7 +64,7 @@ impl<I: Instant + Hash> Hash for Canonical<I> {
         match self {
             Self::Stopped(d) => d.hash(state),
             Self::Bounded(t) => t.hash(state),
-            Self::Unbounded(()) => ().hash(state),
+            Self::Unbounded(()) => {}
         }
     }
 }
