@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [0.3.2] - 2025-03-06
+### Changed
+- Repository moved to new account (no library changes)
+
 ## [0.3.1] - 2024-12-17
 ### Fixed
 - Suppress deprecation warnings from `time` when building `libsw_core`
