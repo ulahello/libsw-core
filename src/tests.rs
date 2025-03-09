@@ -5,10 +5,10 @@
 /* TODOO: not designed for approximate time but coarsetime is
  * supported. it fails some of these tests; grep for @depends-exact */
 
-use ::core::hash::{Hash, Hasher};
-use ::core::time::Duration;
-use ::std::collections::hash_map::DefaultHasher;
-use ::std::thread;
+use core::hash::{Hash, Hasher};
+use core::time::Duration;
+use std::collections::hash_map::DefaultHasher;
+use std::thread;
 
 use crate::Instant;
 

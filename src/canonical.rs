@@ -1,6 +1,6 @@
-use ::core::hash::{Hash, Hasher};
-use ::core::mem;
-use ::core::time::Duration;
+use core::hash::{Hash, Hasher};
+use core::mem;
+use core::time::Duration;
 
 use crate::{Instant, Stopwatch};
 

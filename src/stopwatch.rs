@@ -4,9 +4,9 @@
 
 // TODO: inconsistent occurs vs occurred
 
-use ::core::hash::{Hash, Hasher};
-use ::core::ops;
-use ::core::time::Duration;
+use core::hash::{Hash, Hasher};
+use core::ops;
+use core::time::Duration;
 
 use crate::canonical::Canonical;
 use crate::Instant;
